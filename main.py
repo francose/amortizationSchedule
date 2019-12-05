@@ -40,8 +40,39 @@ class Calculate_InterestPaymentAmount(CalculateAmortizationSchedule):
         return initialAmount
 
 
+class Calculate_PrincipalAmount(CalculateAmortizationSchedule):
+    def execute(self, installmentAmount, interestPayment):
+        pricipalAmount = installmentAmount - interestPayment
+        return pricipalAmount
+
+
+class Calculate_OutstandingBalance(CalculateAmortizationSchedule):
+    def execute(self, pricipalAmount):
+        outStandingBalance = self.loan_Amount - pricipalAmount
+        return outStandingBalance
+
+
+"""
+Principal reduction with the first installment: 1,016.81− 300 = $716.81.17
+Outstanding balance at the end of the first year: 5,000 − 716.81 = $4,283.19.
+
+
+"""
+
+
+def calculateAmortizationSchedule(interestRate: int, terms_of_Loans: int, frequency_of_Payment: int, loan_Amount: int) -> int:
+    interestPayment = Calculate_InterestPaymentAmount(
+        interestRate, terms_of_Loans, frequency_of_Payment, loan_Amount).execute()
+
+    installmentAmount = Calculate_InstallmentAmount(
+        interestRate, terms_of_Loans, frequency_of_Payment, loan_Amount).execute()
+
+    principalAmount = Calculate_PrincipalAmount(
+        interestRate, terms_of_Loans, frequency_of_Payment, loan_Amount).execute(interestPayment, installmentAmount)
+    outStandingBalance = Calculate_OutstandingBalance(
+        interestRate, terms_of_Loans, frequency_of_Payment, loan_Amount).execute(principalAmount)
+
+
 if __name__ == "__main__":
-    installmentAmount = Calculate_InstallmentAmount(5, 10, 12, 20000).execute()
-    InterestPayment = Calculate_InterestPaymentAmount(
-        6, 6, 1, 5000).execute()
-    print(InterestPayment)
+    calc = calculateAmortizationSchedule(6, 6, 1, 5000)
+    print(calc)
