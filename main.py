@@ -21,8 +21,10 @@ class CalculateAmortizationSchedule(ABC):
     def execute(self):
         return self.__init__()
 
+# below method we can obtain the amount as the first installment
 
-class CalculatePaymentAmount(CalculateAmortizationSchedule):
+
+class Calculate_InstallmentAmount(CalculateAmortizationSchedule):
     def execute(self):
         interest = (1 + (self.interestRate /
                          self.frequency_of_Payment))**-self.terms_of_Loans
@@ -31,6 +33,15 @@ class CalculatePaymentAmount(CalculateAmortizationSchedule):
         return paymentAmount
 
 
+class Calculate_InterestPaymentAmount(CalculateAmortizationSchedule):
+    def execute(self):
+        interest = self.interestRate / self.frequency_of_Payment
+        initialAmount = self.loan_Amount * interest
+        return initialAmount
+
+
 if __name__ == "__main__":
-    paymentAmount = CalculatePaymentAmount(5, 10, 12, 20000).execute()
-    print(paymentAmount)
+    installmentAmount = Calculate_InstallmentAmount(5, 10, 12, 20000).execute()
+    InterestPayment = Calculate_InterestPaymentAmount(
+        6, 6, 1, 5000).execute()
+    print(InterestPayment)
