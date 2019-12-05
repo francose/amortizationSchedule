@@ -24,7 +24,7 @@ class CalculateAmortizationSchedule(ABC):
 # below method we can obtain the amount as the first installment
 
 
-class Calculate_InstallmentAmount(CalculateAmortizationSchedule):
+class Calculate_InstallmentAmount(CalculateAmortizationSchedule):  # correct
     def execute(self):
         interest = (1 + (self.interestRate /
                          self.frequency_of_Payment))**-self.terms_of_Loans
@@ -33,7 +33,7 @@ class Calculate_InstallmentAmount(CalculateAmortizationSchedule):
         return paymentAmount
 
 
-class Calculate_InterestPaymentAmount(CalculateAmortizationSchedule):
+class Calculate_InterestPaymentAmount(CalculateAmortizationSchedule):  # correct
     def execute(self):
         interest = self.interestRate / self.frequency_of_Payment
         initialAmount = self.loan_Amount * interest
@@ -42,7 +42,7 @@ class Calculate_InterestPaymentAmount(CalculateAmortizationSchedule):
 
 class Calculate_PrincipalAmount(CalculateAmortizationSchedule):
     def execute(self, installmentAmount, interestPayment):
-        pricipalAmount = installmentAmount - interestPayment
+        pricipalAmount = interestPayment - installmentAmount
         return pricipalAmount
 
 
@@ -52,25 +52,21 @@ class Calculate_OutstandingBalance(CalculateAmortizationSchedule):
         return outStandingBalance
 
 
-"""
-Principal reduction with the first installment: 1,016.81− 300 = $716.81.17
-Outstanding balance at the end of the first year: 5,000 − 716.81 = $4,283.19.
-
-
-"""
-
-
 def calculateAmortizationSchedule(interestRate: int, terms_of_Loans: int, frequency_of_Payment: int, loan_Amount: int) -> int:
-    interestPayment = Calculate_InterestPaymentAmount(
+    installmentAmount = Calculate_InstallmentAmount(
         interestRate, terms_of_Loans, frequency_of_Payment, loan_Amount).execute()
 
-    installmentAmount = Calculate_InstallmentAmount(
+    interestPayment = Calculate_InterestPaymentAmount(
         interestRate, terms_of_Loans, frequency_of_Payment, loan_Amount).execute()
 
     principalAmount = Calculate_PrincipalAmount(
         interestRate, terms_of_Loans, frequency_of_Payment, loan_Amount).execute(interestPayment, installmentAmount)
+
     outStandingBalance = Calculate_OutstandingBalance(
         interestRate, terms_of_Loans, frequency_of_Payment, loan_Amount).execute(principalAmount)
+
+    print(installmentAmount, interestPayment,
+          principalAmount, outStandingBalance)
 
 
 if __name__ == "__main__":
