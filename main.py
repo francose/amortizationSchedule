@@ -37,7 +37,8 @@ class CalculateAmortization(CalculateAmortizationSchedule):
         interest = self.interestRate / self.frequency_of_Payment
         balanceDue = self.loan_Amount
 
-        table = pd.DataFrame(columns=["a", "b", "c", "d"])
+        table = pd.DataFrame(
+            columns=["Installment Amount", "Interest Portion", "Principal Portion", "Balance Due"])
 
         installments = [0]
         interestPortion = [0]
@@ -61,10 +62,10 @@ class CalculateAmortization(CalculateAmortizationSchedule):
             c = balanceDue[i-1] - b
             balanceDue.insert(i, c)
 
-        table["a"] = installments
-        table["b"] = interestPortion
-        table["c"] = principalPortion
-        table["d"] = balanceDue
+        table["Installment Amount"] = installments
+        table["Interest Portion"] = interestPortion
+        table["Principal Portion"] = principalPortion
+        table["Balance Due"] = balanceDue
 
         return table.round(2)
 
