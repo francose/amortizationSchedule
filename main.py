@@ -69,8 +69,6 @@ class CalculateAmortization(CalculateAmortizationSchedule):
 
         return table.round(2)
 
-    # return interestPortion
-
 
 if __name__ == "__main__":
     calc = CalculateAmortization(5, 10, 12, 20000).execute()
