@@ -10,4 +10,7 @@
 ```python
 '''Create an instance of CalctulateAmortization class and pass the parameters as intergers '''
 calculate = CalctulateAmortization(5, 10, 12, 20000)
+'''TO run the calculations we need to call execute funtion '''
+calculate.execute()
+
 ```
