@@ -1,4 +1,6 @@
-### CalculateAmortization method takes 4 parameters
+### CalculateAmortization
+
+**_method takes 4 parameters_**
 
 1. Interest rate
 2. Years
