@@ -21,54 +21,55 @@ class CalculateAmortizationSchedule(ABC):
     def execute(self):
         return self.__init__()
 
-# below method we can obtain the amount as the first installment
 
+class CalculateAmortization(CalculateAmortizationSchedule):
 
-class Calculate_InstallmentAmount(CalculateAmortizationSchedule):  # correct
-    def execute(self):
+    def installmentAmount(self):
         interest = (1 + (self.interestRate /
                          self.frequency_of_Payment))**-self.terms_of_Loans
         paymentAmount = self.loan_Amount / ((1-interest) / (self.interestRate /
                                                             self.frequency_of_Payment))
         return paymentAmount
 
-
-class Calculate_InterestPaymentAmount(CalculateAmortizationSchedule):  # correct
     def execute(self):
+
+        installment = self.installmentAmount()
         interest = self.interestRate / self.frequency_of_Payment
-        initialAmount = self.loan_Amount * interest
-        return initialAmount
+        balanceDue = self.loan_Amount
 
+        table = pd.DataFrame(columns=["a", "b", "c", "d"])
 
-class Calculate_PrincipalAmount(CalculateAmortizationSchedule):
-    def execute(self, installmentAmount, interestPayment):
-        pricipalAmount = interestPayment - installmentAmount
-        return pricipalAmount
+        installments = [0]
+        interestPortion = [0]
+        principalPortion = [0]
+        balanceDue = [self.loan_Amount]
 
+        installments.insert(1, installment)
+        a = self.loan_Amount * interest
+        interestPortion.insert(1, a)
+        b = installment - a
+        principalPortion.insert(1, b)
+        c = balanceDue[0] - b
+        balanceDue.insert(1, c)
 
-class Calculate_OutstandingBalance(CalculateAmortizationSchedule):
-    def execute(self, pricipalAmount):
-        outStandingBalance = self.loan_Amount - pricipalAmount
-        return outStandingBalance
+        for i in range(2, self.terms_of_Loans+1):
+            installments.insert(i, installment)
+            a = balanceDue[i-1] * interest
+            interestPortion.insert(i, a)
+            b = installment - a
+            principalPortion.insert(i, b)
+            c = balanceDue[i-1] - b
+            balanceDue.insert(i, c)
 
+        table["a"] = installments
+        table["b"] = interestPortion
+        table["c"] = principalPortion
+        table["d"] = balanceDue
 
-def calculateAmortizationSchedule(interestRate: int, terms_of_Loans: int, frequency_of_Payment: int, loan_Amount: int) -> int:
-    installmentAmount = Calculate_InstallmentAmount(
-        interestRate, terms_of_Loans, frequency_of_Payment, loan_Amount).execute()
+        return table.round(2)
 
-    interestPayment = Calculate_InterestPaymentAmount(
-        interestRate, terms_of_Loans, frequency_of_Payment, loan_Amount).execute()
-
-    principalAmount = Calculate_PrincipalAmount(
-        interestRate, terms_of_Loans, frequency_of_Payment, loan_Amount).execute(interestPayment, installmentAmount)
-
-    outStandingBalance = Calculate_OutstandingBalance(
-        interestRate, terms_of_Loans, frequency_of_Payment, loan_Amount).execute(principalAmount)
-
-    print(installmentAmount, interestPayment,
-          principalAmount, outStandingBalance)
+    # return interestPortion
 
 
 if __name__ == "__main__":
-    calc = calculateAmortizationSchedule(6, 6, 1, 5000)
-    print(calc)
+    calc = CalculateAmortization(5, 10, 12, 20000).execute()
