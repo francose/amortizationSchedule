@@ -68,6 +68,44 @@ class CalculateAmortization(CalculateAmortizationSchedule):
         return table.round(2)
 
 
+class CalculateSkiningFund(CalculateAmortizationSchedule):
+
+    def createTable(self, a, b, c, d, e):
+
+        table = pd.DataFrame(
+            columns=["Installment Amount", "Interest Payment", "Sinking Fund Deposit", "Sinking Fund Interest", "Sinking Fund Balance"])
+
+        table["Installment Amount"] = a
+        table["Interest Payment"] = b
+        table["Sinking Fund Deposit"] = c
+        table["Sinking Fund Interest"] = d
+        table["Sinking Fund Balance"] = e
+
+        return table
+
+    def installmentAmount(self):
+        interest = (1 + (self.interestRate /
+                         self.frequency_of_Payment))**-self.terms_of_Loans
+        paymentAmount = self.loan_Amount / ((1-interest) / (self.interestRate /
+                                                            self.frequency_of_Payment))
+        return paymentAmount
+
+    def execute(self):
+        installment = self.installmentAmount()
+        interest = self.interestRate / self.frequency_of_Payment
+
+        a = self.loan_Amount * interest
+        b = installment - a
+
+        installments = [installment]
+        interestPayment = [a]
+        SkiningFundDeposit = [b]
+        SkiningFundInterest = [0]
+        SkiningFundBalance = [b+0]
+
+
 if __name__ == "__main__":
-    calc = CalculateAmortization(6, 6, 1, 5000)
-    print(calc.execute())
+    calc = CalculateAmortization(5, 10, 12, 20000)
+    calc.execute()
+    c = CalculateSkiningFund(6, 6, 1, 5000)
+    print(c.execute())
