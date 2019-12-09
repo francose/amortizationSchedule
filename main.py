@@ -24,6 +24,17 @@ class CalculateAmortizationSchedule(ABC):
 
 class CalculateAmortization(CalculateAmortizationSchedule):
 
+    def createTable(self, a, b, c, d):
+        table = pd.DataFrame(
+            columns=["Installment Amount", "Interest Portion", "Principal Portion", "Balance Due"])
+
+        table["Installment Amount"] = a
+        table["Interest Portion"] = b
+        table["Principal Portion"] = c
+        table["Balance Due"] = d
+
+        return table
+
     def installmentAmount(self):
         interest = (1 + (self.interestRate /
                          self.frequency_of_Payment))**-self.terms_of_Loans
@@ -32,28 +43,17 @@ class CalculateAmortization(CalculateAmortizationSchedule):
         return paymentAmount
 
     def execute(self):
-
         installment = self.installmentAmount()
         interest = self.interestRate / self.frequency_of_Payment
         balanceDue = self.loan_Amount
-
-        table = pd.DataFrame(
-            columns=["Installment Amount", "Interest Portion", "Principal Portion", "Balance Due"])
 
         installments = [0]
         interestPortion = [0]
         principalPortion = [0]
         balanceDue = [self.loan_Amount]
 
-        installments.insert(1, installment)
         a = self.loan_Amount * interest
-        interestPortion.insert(1, a)
-        b = installment - a
-        principalPortion.insert(1, b)
-        c = balanceDue[0] - b
-        balanceDue.insert(1, c)
-
-        for i in range(2, self.terms_of_Loans+1):
+        for i in range(1, self.terms_of_Loans+1):
             installments.insert(i, installment)
             a = balanceDue[i-1] * interest
             interestPortion.insert(i, a)
@@ -62,13 +62,12 @@ class CalculateAmortization(CalculateAmortizationSchedule):
             c = balanceDue[i-1] - b
             balanceDue.insert(i, c)
 
-        table["Installment Amount"] = installments
-        table["Interest Portion"] = interestPortion
-        table["Principal Portion"] = principalPortion
-        table["Balance Due"] = balanceDue
+        table = self.createTable(installments, interestPortion,
+                                 principalPortion, balanceDue)
 
         return table.round(2)
 
 
 if __name__ == "__main__":
-    calc = CalculateAmortization(5, 10, 12, 20000).execute()
+    calc = CalculateAmortization(6, 6, 1, 5000)
+    print(calc.execute())
