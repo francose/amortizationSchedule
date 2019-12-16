@@ -96,12 +96,29 @@ class CalculateSkiningFund(CalculateAmortizationSchedule):
 
         a = self.loan_Amount * interest
         b = installment - a
+        # c = b * interest
+        # d = b + b + c
 
         installments = [installment]
         interestPayment = [a]
-        SkiningFundDeposit = [b]
-        SkiningFundInterest = [0]
+        SkiningFundDeposit = [b] * interest
+        SkiningFundInterest = [0] + c
         SkiningFundBalance = [b+0]
+
+        a = self.loan_Amount * interest
+        for i in range(1, self.terms_of_Loans+1):
+            installments.insert(i, installment)
+            a = balanceDue[i-1] * interest
+            interestPortion.insert(i, a)
+            b = installment - a
+            principalPortion.insert(i, b)
+            c = balanceDue[i-1] - b
+            balanceDue.insert(i, c)
+
+        table = self.createTable(installments, interestPortion,
+                                 principalPortion, balanceDue)
+
+        # print(installment, a, b, c, d)
 
 
 if __name__ == "__main__":
