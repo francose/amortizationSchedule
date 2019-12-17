@@ -104,11 +104,11 @@ class CalculateSkiningFund(CalculateAmortizationSchedule):
         SkiningFundBalance = [0]
 
         for i in reversed(range(1, self.terms_of_Loans+1)):
-            print()
+
             installments.insert(i, installment)
             interestPayment.insert(i, a)
             SkiningFundDeposit.insert(i, b)
-            c = SkiningFundDeposit[i-1] - (1+interest)**-i
+            c = - (1+interest)**-i
             SkiningFundInterest.insert(i, c)
             # d = SkiningFundDeposit[i] + \
             #     SkiningFundDeposit[i] + SkiningFundInterest[i]
