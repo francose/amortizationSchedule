@@ -5,7 +5,7 @@
 1. Interest rate
 2. Years
 3. Frequency of the interest that hits in that period of time
-4. Loan amount
+4. Loan Amount
 
 ### Calculating Amortization Table
 
@@ -16,6 +16,13 @@ calculate = CalctulateAmortization(5, 10, 12, 20000)
 calculate.execute()
 
 ```
+
+**_method takes 4 parameters_**
+
+1. Interest rate
+2. Years
+3. Frequency of the interest that hits in that period of time
+4. Money Amount
 
 ### Calculating Sinking Fund Table
 
