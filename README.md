@@ -11,8 +11,8 @@
 
 ```python
 '''Create an instance of CalctulateAmortization class and pass the parameters as intergers '''
-calculate = CalctulateAmortization(5, 10, 12, 20000)
-'''TO run the calculations we need to call execute funtion '''
+calculate = CalctulateAmortization(interestRate, years, frequency, loanAmount)
+'''To run the calculations we need to call execute funtion '''
 calculate.execute()
 
 ```
@@ -28,7 +28,7 @@ calculate.execute()
 
 ```python
 ''' Create an instance of CalculateSinkingFund class and pass the parameters as integers'''
-calculate = CalculateSinkingFund(6, 6, 1, 5000)
-'''TO run the calculations we need to call execute funtion '''
+calculate = CalculateSinkingFund(interestRate, years, frequency, amount)
+'''To run the calculations we need to call execute funtion '''
 calculate.execute()
 ```
