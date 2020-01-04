@@ -68,7 +68,7 @@ class CalculateAmortization(CalculateAmortizationSchedule):
         return table.round(2)
 
 
-class CalculateSkiningFund(CalculateAmortizationSchedule):
+class CalculateSinkingFund(CalculateAmortizationSchedule):
 
     def createTable(self, a, b, c, d, e):
 
@@ -93,35 +93,33 @@ class CalculateSkiningFund(CalculateAmortizationSchedule):
     def execute(self):
         installment = self.installmentAmount()
         interest = self.interestRate / self.frequency_of_Payment
+        interestPayment = self.loan_Amount * interest
+        sinkingFundDeposit = installment - interestPayment
+        sinkingFundInterest = installment - \
+            (interestPayment + sinkingFundDeposit)
+        sinkingFundBalance = installment - interestPayment
 
-        a = self.loan_Amount * interest
-        b = installment - a
+        Installments = [installment] * self.terms_of_Loans
+        InterestPayment = [interestPayment] * self.terms_of_Loans
+        SinkingFundDeposit = [sinkingFundDeposit] * self.terms_of_Loans
+        SinkingFundInterest = [sinkingFundInterest]
+        SinkingFundBalance = [sinkingFundBalance]
 
-        installments = [installment]
-        interestPayment = [a]
-        SkiningFundDeposit = [b]
-        SkiningFundInterest = [0]
-        SkiningFundBalance = [0]
+        for i in range(0, self.terms_of_Loans-1):
+            SinkingFundBalance.insert(
+                i+1, (SinkingFundBalance[i] * interest) + SinkingFundDeposit[i] + SinkingFundBalance[i])
 
-        for i in reversed(range(1, self.terms_of_Loans+1)):
+        for i in range(0, self.terms_of_Loans-1):
+            SinkingFundInterest.insert(i+1, (SinkingFundBalance[i] * interest))
 
-            installments.insert(i, installment)
-            interestPayment.insert(i, a)
-            SkiningFundDeposit.insert(i, b)
-            c = - (1+interest)**-i
-            SkiningFundInterest.insert(i, c)
-            # d = SkiningFundDeposit[i] + \
-            #     SkiningFundDeposit[i] + SkiningFundInterest[i]
-            # SkiningFundBalance.insert(i, d)
-
-        table = self.createTable(installments, interestPayment, SkiningFundDeposit,
-                                 SkiningFundInterest, 0)
+        table = self.createTable(Installments, InterestPayment, SinkingFundDeposit,
+                                 SinkingFundInterest, SinkingFundBalance)
 
         return(table)
 
 
 if __name__ == "__main__":
-    calc = CalculateAmortization(5, 10, 12, 20000)
-    calc.execute()
-    c = CalculateSkiningFund(6, 6, 1, 5000)
+    # calc = CalculateAmortization(5.75, 24, 1, 8460)
+    # print(calc.execute())
+    c = CalculateSinkingFund(6, 6, 1, 5000)
     print(c.execute())
