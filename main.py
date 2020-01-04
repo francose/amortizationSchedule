@@ -118,8 +118,8 @@ class CalculateSinkingFund(CalculateAmortizationSchedule):
         return(table)
 
 
-if __name__ == "__main__":
-    # calc = CalculateAmortization(5.75, 24, 1, 8460)
-    # print(calc.execute())
-    c = CalculateSinkingFund(6, 6, 1, 5000)
-    print(c.execute())
+# if __name__ == "__main__":
+#     calc = CalculateAmortization(5.75, 24, 1, 8460)
+#     print(calc.execute())
+#     c = CalculateSinkingFund(6, 6, 1, 5000)
+#     print(c.execute())
